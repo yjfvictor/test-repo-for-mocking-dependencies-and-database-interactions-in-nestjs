@@ -1,0 +1,28 @@
+# Docker Compose configuration for local PostgreSQL database.
+# Used when running the NestJS application with npm run start.
+# Start with: docker-compose up -d
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nestjs-mocking-postgres
+    environment:
+      LANG: en_GB.UTF-8
+      LC_ALL: en_GB.UTF-8
+      POSTGRES_INITDB_ARGS: "--locale=en_GB.UTF-8"
+      POSTGRES_USER: nestjs_user
+      POSTGRES_PASSWORD: nestjs_password
+      POSTGRES_DB: nestjs_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nestjs_user -d nestjs_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    name: postgres_data
